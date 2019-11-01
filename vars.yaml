@@ -1,0 +1,23 @@
+# конфиг nginx на машине с которой запускается
+# полный или относительный путь в зависимости от куда запускается плэйбук
+
+#file_config_nginx: "/tpm/dz/nginx"
+file_config_nginx: "./nginx"
+
+
+# скрипт для очистки старых jpg файлов и перемещение сомого последнего
+# полный или относительный путь в зависимости от куда запускается плэйбук
+
+#file_script: "/tpm/dz/script.sh"
+file_script: "./script.sh"
+
+
+# Папки для конфига и скрипта на сервере
+dir_host_conf_nginx: "/opt/app/conf/nginx"
+dir_host_script: "/opt/app/conf/script"
+
+#url потока
+url_stream: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
+
+#префикс для файла
+prefix_jpg_file: "bunny_"

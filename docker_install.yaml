@@ -1,0 +1,8 @@
+  - name: Install docker and pip3
+    apt:
+      name: ['docker.io', 'python3-pip']
+      update_cache: yes
+
+  - name: Install docker-py
+    pip:
+      name: docker-py

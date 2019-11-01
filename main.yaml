@@ -1,0 +1,80 @@
+---
+- hosts: test
+  user: ubuntu
+  become: true
+  vars_files:
+  - vars.yaml
+
+
+  tasks:
+
+  - name: Install docker
+    include: docker_install.yaml
+
+  - name: "Create a directory /opt/app/"
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0755'
+    with_items:
+    - "{{ dir_host_conf_nginx }}"
+    - "{{ dir_host_script }}"
+
+  - name: Copy file script.sh
+    copy:
+      src: "{{ file_script }}"
+      dest: "{{ dir_host_script }}/script.sh"
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Copy file nginx.conf
+    copy:
+      src: "{{ file_config_nginx }}"
+      dest: "{{ dir_host_conf_nginx }}/default"
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Create a volume
+    docker_volume:
+      name: www-image
+  - name: Create a volume
+    docker_volume:
+      name: src-image
+
+
+  - name: Create container nginx
+    docker_container:
+      name: nginx
+      image: nginx
+      restart_policy: always
+      ports:
+        - "80:80"
+      volumes:
+      - www-image:/var/www/
+      - "{{ dir_host_conf_nginx }}/default:/etc/nginx/conf.d/default.conf"
+
+  - name: Create container script
+    docker_container:
+      name: script
+      image: ubuntu
+      command: /bin/bash /opt/script.sh
+      restart_policy: always
+      env:
+        PREFIX_JPG: "{{ prefix_jpg_file }}"
+      volumes:
+      - www-image:/var/www/
+      - src-image:/app/src/
+      - "{{ dir_host_script }}/script.sh:/opt/script.sh"
+
+  - name: Create container ffmpeg
+    docker_container:
+      name: ffmpeg
+      image: jrottenberg/ffmpeg
+      command: "-i {{ url_stream }} /app/src/{{ prefix_jpg_file }}%05d.jpg"
+      restart_policy: always
+      volumes:
+      - src-image:/app/src/
+
+

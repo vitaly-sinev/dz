@@ -1,7 +1,12 @@
 [test]
-ec2-54-93-64-126.eu-central-1.compute.amazonaws.com
+# public dns name ec2 instance
+ec2-18-196-97-253.eu-central-1.compute.amazonaws.com
 
 
 [test:vars]
-ansible_ssh_private_key_file=/tpm/dz/test.pem
+
+# ssh private key ec2 instance
+ansible_ssh_private_key_file=./test.pem
+
+# ssh user ec2 instance
 ansible_user=ubuntu
